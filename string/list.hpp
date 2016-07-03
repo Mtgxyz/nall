@@ -16,7 +16,7 @@ auto lstring::operator!=(const lstring& source) const -> bool {
 }
 
 auto lstring::isort() -> lstring& {
-  nall::sort(pool, objectsize, [](const string& x, const string& y) {
+  sort([](const string& x, const string& y) {
     return memory::icompare(x.data(), x.size(), y.data(), y.size()) < 0;
   });
   return *this;
@@ -32,21 +32,21 @@ auto lstring::append() -> lstring& {
   return *this;
 }
 
-auto lstring::find(rstring source) const -> maybe<uint> {
+auto lstring::find(string_view source) const -> maybe<uint> {
   for(uint n = 0; n < size(); n++) {
     if(operator[](n).equals(source)) return n;
   }
   return nothing;
 }
 
-auto lstring::ifind(rstring source) const -> maybe<uint> {
+auto lstring::ifind(string_view source) const -> maybe<uint> {
   for(uint n = 0; n < size(); n++) {
     if(operator[](n).iequals(source)) return n;
   }
   return nothing;
 }
 
-auto lstring::match(rstring pattern) const -> lstring {
+auto lstring::match(string_view pattern) const -> lstring {
   lstring result;
   for(uint n = 0; n < size(); n++) {
     if(operator[](n).match(pattern)) result.append(operator[](n));
@@ -54,7 +54,7 @@ auto lstring::match(rstring pattern) const -> lstring {
   return result;
 }
 
-auto lstring::merge(rstring separator) const -> string {
+auto lstring::merge(string_view separator) const -> string {
   string output;
   for(uint n = 0; n < size(); n++) {
     output.append(operator[](n));

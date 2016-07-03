@@ -7,7 +7,6 @@
 #include <nall/utility.hpp>
 #include <nall/varint.hpp>
 #include <nall/hash/sha256.hpp>
-#include <nall/stream/memory.hpp>
 
 namespace nall {
 
@@ -239,7 +238,7 @@ struct file : inode, varint {
     #endif
   }
 
-  auto end() -> bool {
+  auto end() const -> bool {
     if(!fp) return true;  //file not open
     return file_offset >= file_size;
   }

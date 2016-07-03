@@ -10,13 +10,11 @@ namespace Configuration {
 struct Node {
   string name;
   string desc;
-  enum class Type : unsigned { Null, Boolean, Integer, Natural, Double, String } type = Type::Null;
+  enum class Type : uint { Null, Boolean, Integer, Natural, Double, String } type = Type::Null;
   void* data = nullptr;
   vector<Node> children;
 
-  auto empty() const -> bool {
-    return data == nullptr;
-  }
+  explicit operator bool() const { return data; }
 
   auto get() const -> string {
     switch(type) {
@@ -57,7 +55,7 @@ struct Node {
 
   auto find(const string& path) -> maybe<Node&> {
     auto p = path.split("/");
-    auto name = p.takeFirst();
+    auto name = p.takeLeft();
     for(auto& child : children) {
       if(child.name == name) {
         if(p.size() == 0) return child;
@@ -70,13 +68,13 @@ struct Node {
   auto load(Markup::Node path) -> void {
     for(auto& child : children) {
       if(auto leaf = path[child.name]) {
-        if(!child.empty()) child.set(leaf.text());
+        if(child) child.set(leaf.text());
         child.load(leaf);
       }
     }
   }
 
-  auto save(file& fp, unsigned depth = 0) -> void {
+  auto save(file& fp, uint depth = 0) -> void {
     for(auto& child : children) {
       if(child.desc) {
         for(auto n : range(depth)) fp.print("  ");
@@ -84,7 +82,7 @@ struct Node {
       }
       for(auto n : range(depth)) fp.print("  ");
       fp.print(child.name);
-      if(!child.empty()) fp.print(": ", child.get());
+      if(child) fp.print(": ", child.get());
       fp.print("\n");
       child.save(fp, depth + 1);
       if(depth == 0) fp.print("\n");

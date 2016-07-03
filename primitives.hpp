@@ -29,27 +29,27 @@ template<uint Bits> struct Natural {
   enum : type { Mask = ~0ull >> (64 - Bits) };
 
   inline Natural() : data(0) {}
-  template<typename T> inline Natural(const T& value) { assign(value); }
+  template<typename T> inline Natural(const T& value) { set(value); }
 
   inline operator type() const { return data; }
-  template<typename T> inline auto& operator=(const T& value) { assign(value); return *this; }
+  template<typename T> inline auto& operator=(const T& value) { set(value); return *this; }
 
-  inline auto operator++(int) { type value = data; assign(data + 1); return value; }
-  inline auto operator--(int) { type value = data; assign(data - 1); return value; }
+  inline auto operator++(int) { type value = data; set(data + 1); return value; }
+  inline auto operator--(int) { type value = data; set(data - 1); return value; }
 
-  inline auto& operator++() { assign(data + 1); return *this; }
-  inline auto& operator--() { assign(data - 1); return *this; }
+  inline auto& operator++() { set(data + 1); return *this; }
+  inline auto& operator--() { set(data - 1); return *this; }
 
-  inline auto& operator &=(const type value) { assign(data  & value); return *this; }
-  inline auto& operator |=(const type value) { assign(data  | value); return *this; }
-  inline auto& operator ^=(const type value) { assign(data  ^ value); return *this; }
-  inline auto& operator<<=(const type value) { assign(data << value); return *this; }
-  inline auto& operator>>=(const type value) { assign(data >> value); return *this; }
-  inline auto& operator +=(const type value) { assign(data  + value); return *this; }
-  inline auto& operator -=(const type value) { assign(data  - value); return *this; }
-  inline auto& operator *=(const type value) { assign(data  * value); return *this; }
-  inline auto& operator /=(const type value) { assign(data  / value); return *this; }
-  inline auto& operator %=(const type value) { assign(data  % value); return *this; }
+  inline auto& operator &=(const type value) { set(data  & value); return *this; }
+  inline auto& operator |=(const type value) { set(data  | value); return *this; }
+  inline auto& operator ^=(const type value) { set(data  ^ value); return *this; }
+  inline auto& operator<<=(const type value) { set(data << value); return *this; }
+  inline auto& operator>>=(const type value) { set(data >> value); return *this; }
+  inline auto& operator +=(const type value) { set(data  + value); return *this; }
+  inline auto& operator -=(const type value) { set(data  - value); return *this; }
+  inline auto& operator *=(const type value) { set(data  * value); return *this; }
+  inline auto& operator /=(const type value) { set(data  / value); return *this; }
+  inline auto& operator %=(const type value) { set(data  % value); return *this; }
 
   inline auto serialize(serializer& s) { s(data); }
 
@@ -92,7 +92,7 @@ template<uint Bits> struct Natural {
   }
 
 private:
-  auto assign(type value) -> void {
+  auto set(type value) -> void {
     data = value & Mask;
   }
 
@@ -111,27 +111,27 @@ template<uint Bits> struct Integer {
   enum : utype { Mask = ~0ull >> (64 - Bits), Sign = 1ull << (Bits - 1) };
 
   inline Integer() : data(0) {}
-  template<typename T> inline Integer(const T& value) { assign(value); }
+  template<typename T> inline Integer(const T& value) { set(value); }
 
   inline operator type() const { return data; }
-  template<typename T> inline auto& operator=(const T& value) { assign(value); return *this; }
+  template<typename T> inline auto& operator=(const T& value) { set(value); return *this; }
 
-  inline auto operator++(int) { type value = data; assign(data + 1); return value; }
-  inline auto operator--(int) { type value = data; assign(data - 1); return value; }
+  inline auto operator++(int) { type value = data; set(data + 1); return value; }
+  inline auto operator--(int) { type value = data; set(data - 1); return value; }
 
-  inline auto& operator++() { assign(data + 1); return *this; }
-  inline auto& operator--() { assign(data - 1); return *this; }
+  inline auto& operator++() { set(data + 1); return *this; }
+  inline auto& operator--() { set(data - 1); return *this; }
 
-  inline auto& operator &=(const type value) { assign(data  & value); return *this; }
-  inline auto& operator |=(const type value) { assign(data  | value); return *this; }
-  inline auto& operator ^=(const type value) { assign(data  ^ value); return *this; }
-  inline auto& operator<<=(const type value) { assign(data << value); return *this; }
-  inline auto& operator>>=(const type value) { assign(data >> value); return *this; }
-  inline auto& operator +=(const type value) { assign(data  + value); return *this; }
-  inline auto& operator -=(const type value) { assign(data  - value); return *this; }
-  inline auto& operator *=(const type value) { assign(data  * value); return *this; }
-  inline auto& operator /=(const type value) { assign(data  / value); return *this; }
-  inline auto& operator %=(const type value) { assign(data  % value); return *this; }
+  inline auto& operator &=(const type value) { set(data  & value); return *this; }
+  inline auto& operator |=(const type value) { set(data  | value); return *this; }
+  inline auto& operator ^=(const type value) { set(data  ^ value); return *this; }
+  inline auto& operator<<=(const type value) { set(data << value); return *this; }
+  inline auto& operator>>=(const type value) { set(data >> value); return *this; }
+  inline auto& operator +=(const type value) { set(data  + value); return *this; }
+  inline auto& operator -=(const type value) { set(data  - value); return *this; }
+  inline auto& operator *=(const type value) { set(data  * value); return *this; }
+  inline auto& operator /=(const type value) { set(data  / value); return *this; }
+  inline auto& operator %=(const type value) { set(data  % value); return *this; }
 
   inline auto serialize(serializer& s) { s(data); }
 
@@ -174,7 +174,7 @@ template<uint Bits> struct Integer {
   }
 
 private:
-  auto assign(type value) -> void {
+  auto set(type value) -> void {
     data = ((value & Mask) ^ Sign) - Sign;
   }
 
@@ -208,12 +208,16 @@ template<uint Bits> struct Real {
 
   inline auto serialize(serializer& s) { s(data); }
 
+private:
   type data;
 };
 
 }
 
 using boolean = nall::Boolean;
+//note: these conflict with nall/atoi.hpp functions
+//using integer = nall::Integer<sizeof( int) * 8>;
+//using natural = nall::Natural<sizeof(uint) * 8>;
 
 using  int1 = nall::Integer< 1>;
 using  int2 = nall::Integer< 2>;
