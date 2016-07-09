@@ -4,6 +4,8 @@
  * revision 0.02
  */
 
+#include <nall/location.hpp>
+
 namespace nall { namespace {
 
 struct CML {
@@ -33,7 +35,7 @@ private:
 };
 
 auto CML::parse(const string& filename) -> string {
-  if(!settings.path) settings.path = pathname(filename);
+  if(!settings.path) settings.path = Location::path(filename);
   string document = settings.reader ? settings.reader(filename) : string::read(filename);
   parseDocument(document, settings.path, 0);
   return state.output;
@@ -54,14 +56,14 @@ auto CML::parseDocument(const string& filedata, const string& pathname, uint dep
   };
 
   for(auto& block : filedata.split("\n\n")) {
-    lstring lines = block.stripRight().split("\n");
-    string name = lines.takeLeft();
+    auto lines = block.stripRight().split("\n");
+    auto name = lines.takeLeft();
 
     if(name.beginsWith("include ")) {
       name.trimLeft("include ", 1L);
       string filename{pathname, name};
       string document = settings.reader ? settings.reader(filename) : string::read(filename);
-      parseDocument(document, nall::pathname(filename), depth + 1);
+      parseDocument(document, Location::path(filename), depth + 1);
       continue;
     }
 

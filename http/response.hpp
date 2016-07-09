@@ -87,18 +87,18 @@ auto Response::head(const function<bool (const uint8_t*, unsigned)>& callback) c
 }
 
 auto Response::setHead() -> bool {
-  lstring headers = _head.split("\n");
+  auto headers = _head.split("\n");
   string response = headers.takeLeft().trimRight("\r");
 
        if(response.ibeginsWith("HTTP/1.0 ")) response.itrimLeft("HTTP/1.0 ", 1L);
   else if(response.ibeginsWith("HTTP/1.1 ")) response.itrimLeft("HTTP/1.1 ", 1L);
   else return false;
 
-  setResponseType(natural(response));
+  setResponseType(response.natural());
 
   for(auto& header : headers) {
     if(header.beginsWith(" ") || header.beginsWith("\t")) continue;
-    lstring variable = header.split(":", 1L).strip();
+    auto variable = header.split(":", 1L).strip();
     if(variable.size() != 2) continue;
     this->header.append(variable[0], variable[1]);
   }
@@ -166,7 +166,7 @@ auto Response::findContentLength() const -> unsigned {
 auto Response::findContentType() const -> string {
   if(auto contentType = header["Content-Type"]) return contentType.value();
   if(hasData()) return "application/octet-stream";
-  if(hasFile()) return findContentType(suffixname(file()));
+  if(hasFile()) return findContentType(Location::suffix(file()));
   return "text/html; charset=utf-8";
 }
 
