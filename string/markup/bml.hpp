@@ -74,13 +74,13 @@ protected:
       if(length == 0) throw "Invalid attribute name";
       node->_name = slice(p, 0, length);
       node->parseData(p += length);
-      node->_value.rtrim("\n", 1L);
+      node->_value.trimRight("\n", 1L);
       _children.append(node);
     }
   }
 
   //read a node and all of its child nodes
-  auto parseNode(const lstring& text, uint& y) -> void {
+  auto parseNode(const string_vector& text, uint& y) -> void {
     const char* p = text[y++];
     _metadata = parseDepth(p);
     parseName(p);
@@ -101,7 +101,7 @@ protected:
       _children.append(node);
     }
 
-    _value.rtrim("\n", 1L);
+    _value.trimRight("\n", 1L);
   }
 
   //read top-level nodes
@@ -127,7 +127,7 @@ protected:
       memory::move(output, origin, p - origin);
       output += p - origin;
     }
-    document.resize(document.size() - (p - output)).rtrim("\n");
+    document.resize(document.size() - (p - output)).trimRight("\n");
     if(document.size() == 0) return;  //empty document
 
     auto text = document.split("\n");
@@ -166,7 +166,7 @@ inline auto serialize(const Markup::Node& node, uint depth = 0) -> string {
   padding.resize(depth * 2);
   for(auto& byte : padding) byte = ' ';
 
-  lstring lines;
+  string_vector lines;
   if(auto value = node.value()) lines = value.split("\n");
 
   string result;

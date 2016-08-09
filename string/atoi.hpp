@@ -3,15 +3,19 @@
 namespace nall {
 
 auto string::integer() const -> intmax {
-  return nall::integer(data());
+  return toInteger(data());
 }
 
 auto string::natural() const -> uintmax {
-  return nall::natural(data());
+  return toNatural(data());
+}
+
+auto string::hex() const -> uintmax {
+  return toHex(data());
 }
 
 auto string::real() const -> double {
-  return nall::real(data());
+  return toReal(data());
 }
 
 }

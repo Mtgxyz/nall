@@ -5,16 +5,16 @@ namespace nall {
 //nall::format is a vector<string> of parameters that can be applied to a string
 //each {#} token will be replaced with its appropriate format parameter
 
-auto string::format(const nall::format& params) -> type& {
+auto string::format(const nall::string_format& params) -> type& {
   auto size = (int)this->size();
   auto data = (char*)memory::allocate(size);
   memory::copy(data, this->data(), size);
 
-  signed x = 0;
+  int x = 0;
   while(x < size - 2) {  //2 = minimum tag length
     if(data[x] != '{') { x++; continue; }
 
-    signed y = x + 1;
+    int y = x + 1;
     while(y < size - 1) {  //-1 avoids going out of bounds on test after this loop
       if(data[y] != '}') { y++; continue; }
       break;
@@ -32,7 +32,7 @@ auto string::format(const nall::format& params) -> type& {
     };
     if(!isNumeric(&data[x + 1], &data[y - 1])) { x++; continue; }
 
-    uint index = nall::natural(&data[x + 1]);
+    uint index = toNatural(&data[x + 1]);
     if(index >= params.size()) { x++; continue; }
 
     uint sourceSize = y - x;
@@ -59,51 +59,27 @@ auto string::format(const nall::format& params) -> type& {
   return *this;
 }
 
-template<typename T, typename... P> auto format::append(const T& value, P&&... p) -> format& {
+template<typename T, typename... P> auto string_format::append(const T& value, P&&... p) -> string_format& {
   vector<string>::append(value);
   return append(forward<P>(p)...);
 }
 
-auto format::append() -> format& {
+auto string_format::append() -> string_format& {
   return *this;
 }
 
 template<typename... P> auto print(P&&... p) -> void {
   string s{forward<P>(p)...};
-  fputs(s.data(), stdout);
+  fwrite(s.data(), 1, s.size(), stdout);
 }
 
-auto integer(intmax value, long precision, char padchar) -> string {
-  string buffer;
-  buffer.resize(1 + sizeof(intmax) * 3);
-  char* p = buffer.get();
-
-  bool negative = value < 0;
-  if(negative) value = -value;  //make positive
-  uint size = 0;
-  do {
-    p[size++] = '0' + (value % 10);
-    value /= 10;
-  } while(value);
-  if(negative) p[size++] = '-';
-  buffer.resize(size);
-  buffer.reverse();
-  if(precision) buffer.size(precision, padchar);
-  return buffer;
+template<typename... P> auto print(FILE* fp, P&&... p) -> void {
+  string s{forward<P>(p)...};
+  fwrite(s.data(), 1, s.size(), fp);
 }
 
-auto natural(uintmax value, long precision, char padchar) -> string {
-  string buffer;
-  buffer.resize(sizeof(uintmax) * 3);
-  char* p = buffer.get();
-
-  uint size = 0;
-  do {
-    p[size++] = '0' + (value % 10);
-    value /= 10;
-  } while(value);
-  buffer.resize(size);
-  buffer.reverse();
+template<typename T> auto pad(const T& value, long precision, char padchar) -> string {
+  string buffer{value};
   if(precision) buffer.size(precision, padchar);
   return buffer;
 }
@@ -167,11 +143,13 @@ auto pointer(uintptr value, long precision) -> string {
   return {"0x", hex(value, precision)};
 }
 
+/*
 auto real(long double value) -> string {
   string temp;
-  temp.resize(real(nullptr, value));
-  real(temp.get(), value);
+  temp.resize(fromReal(nullptr, value));
+  fromReal(temp.get(), value);
   return temp;
 }
+*/
 
 }

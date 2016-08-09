@@ -17,8 +17,9 @@
 #include <nall/any.hpp>
 #include <nall/atoi.hpp>
 #include <nall/bit.hpp>
-#include <nall/bitvector.hpp>
-#include <nall/config.hpp>
+#include <nall/bit-field.hpp>
+#include <nall/bit-vector.hpp>
+#include <nall/chrono.hpp>
 #include <nall/directory.hpp>
 #include <nall/dl.hpp>
 #include <nall/endian.hpp>
@@ -31,12 +32,15 @@
 #include <nall/inode.hpp>
 #include <nall/interpolation.hpp>
 #include <nall/intrinsics.hpp>
+#include <nall/location.hpp>
 #include <nall/map.hpp>
 #include <nall/matrix.hpp>
 #include <nall/maybe.hpp>
 #include <nall/memory.hpp>
+#include <nall/path.hpp>
 #include <nall/primitives.hpp>
 #include <nall/property.hpp>
+#include <nall/queue.hpp>
 #include <nall/random.hpp>
 #include <nall/range.hpp>
 #include <nall/run.hpp>
@@ -45,7 +49,6 @@
 #include <nall/shared-pointer.hpp>
 #include <nall/sort.hpp>
 #include <nall/stdint.hpp>
-#include <nall/stream.hpp>
 #include <nall/string.hpp>
 #include <nall/thread.hpp>
 #include <nall/traits.hpp>
@@ -64,6 +67,7 @@
 #include <nall/encode/url.hpp>
 #include <nall/hash/crc16.hpp>
 #include <nall/hash/crc32.hpp>
+#include <nall/hash/crc64.hpp>
 #include <nall/hash/sha256.hpp>
 
 #if defined(PLATFORM_WINDOWS)

@@ -110,7 +110,7 @@ struct shared_pointer {
 
   template<typename U, typename = enable_if<is_compatible<U>>>
   auto operator=(const shared_pointer<U>& source) -> shared_pointer& {
-    if((uintptr_t)this != (uintptr_t)&source) {
+    if((uintptr)this != (uintptr)&source) {
       reset();
       if((bool)source) {
         manager = source.manager;
@@ -122,7 +122,7 @@ struct shared_pointer {
 
   template<typename U, typename = enable_if<is_compatible<U>>>
   auto operator=(shared_pointer&& source) -> shared_pointer& {
-    if((uintptr_t)this != (uintptr_t)&source) {
+    if((uintptr)this != (uintptr)&source) {
       reset();
       manager = source.manager;
       source.manager = nullptr;
@@ -170,11 +170,7 @@ struct shared_pointer {
   }
 
   explicit operator bool() const {
-    return !empty();
-  }
-
-  auto empty() const -> bool {
-    return !manager || !manager->strong;
+    return manager && manager->strong;
   }
 
   auto unique() const -> bool {
@@ -242,11 +238,7 @@ struct shared_pointer_weak {
   }
 
   explicit operator bool() const {
-    return !empty();
-  }
-
-  auto empty() const -> bool {
-    return !manager || !manager->strong;
+    return manager && manager->strong;
   }
 
   auto acquire() const -> shared_pointer<T> {

@@ -2,7 +2,7 @@
 
 namespace nall {
 
-auto string::read(rstring filename) -> string {
+auto string::read(string_view filename) -> string {
   #if !defined(_WIN32)
   FILE* fp = fopen(filename, "rb");
   #else
@@ -22,7 +22,7 @@ auto string::read(rstring filename) -> string {
   return fclose(fp), result;
 }
 
-auto string::repeat(rstring pattern, uint times) -> string {
+auto string::repeat(string_view pattern, uint times) -> string {
   string result;
   while(times--) result.append(pattern.data());
   return result;
@@ -33,7 +33,7 @@ auto string::fill(char fill) -> string& {
   return *this;
 }
 
-auto string::hash() const -> unsigned {
+auto string::hash() const -> uint {
   const char* p = data();
   uint length = size();
   uint result = 5381;
@@ -82,7 +82,7 @@ auto string::size(int length, char fill) -> string& {
   return *this;
 }
 
-auto slice(rstring self, int offset, int length) -> string {
+auto slice(string_view self, int offset, int length) -> string {
   string result;
   if(offset < self.size()) {
     if(length < 0) length = self.size() - offset;
@@ -92,7 +92,7 @@ auto slice(rstring self, int offset, int length) -> string {
   return result;
 }
 
-auto integer(char* result, intmax value) -> char* {
+auto fromInteger(char* result, intmax value) -> char* {
   bool negative = value < 0;
   if(negative) value = -value;
 
@@ -111,7 +111,7 @@ auto integer(char* result, intmax value) -> char* {
   return result;
 }
 
-auto natural(char* result, uintmax value) -> char* {
+auto fromNatural(char* result, uintmax value) -> char* {
   char buffer[64];
   uint size = 0;
 
@@ -129,7 +129,7 @@ auto natural(char* result, uintmax value) -> char* {
 //using sprintf is certainly not the most ideal method to convert
 //a double to a string ... but attempting to parse a double by
 //hand, digit-by-digit, results in subtle rounding errors.
-auto real(char* result, long double value) -> uint {
+auto fromReal(char* result, long double value) -> uint {
   char buffer[256];
   #ifdef _WIN32
   //Windows C-runtime does not support long double via sprintf()
