@@ -62,10 +62,4 @@ static_assert(sizeof(float)       >=  4, "float32_t is not of the correct size")
 static_assert(sizeof(double)      >=  8, "float64_t is not of the correct size");
 //static_assert(sizeof(long double) >= 10, "float80_t is not of the correct size");
 
-using intmax = intmax_t;
-using intptr = intptr_t;
-
-using uintmax = uintmax_t;
-using uintptr = uintptr_t;
-
 using uint = unsigned int;
